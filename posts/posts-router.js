@@ -44,10 +44,10 @@ router.get("/:id/comments", (req,res) => {
   const { id } = req.params;
   Posts.findPostComments(id)
   .then(posts => {
-    if (posts.length <= 0) {
-      res.status(404).json({message: "The post with the specified ID does not exist."});   
+    if (posts.length) {
+      res.status(201).json(posts);   
     } else {
-      res.status(201).json(posts);
+      res.status(404).json({message: "The post with the specified ID does not exist."});
     }
   })
   .catch(error => {
@@ -101,7 +101,30 @@ router.post("/:id/comments", (req, res) => {
 });
   
 
+// PUT
+router.put("/:id", (req,res) => {
+  const {id} = req.params;
+  const { title, contents} = req.body;
 
+  Posts.update(id, req.body)
+  .then(posts => {
+    if (req.body === '') {
+      res.status(400).json({message: "Please provide title and contents for this to work, thankssss."});
+    } else if (posts.length) {
+      res.status(404).json({ message: "The post with the specified ID does not exist." });
+    } else {
+      res.status(200).json(posts);
+    }
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({
+      message: "There was an error updating this post, try again."
+    });
+  });
+ });
+
+// DELETE
   
 
 module.exports = router;
