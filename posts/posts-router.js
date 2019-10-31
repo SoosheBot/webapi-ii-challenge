@@ -126,5 +126,22 @@ router.put("/:id", (req,res) => {
 
 // DELETE
   
+router.delete("/:id", (req,res) => {
+  const {id} = req.params;
+  Posts.remove(id)
+  .then(posts => {
+    if (posts) {
+      res.status(200).json({message: "Post has been deleted"})
+    } else {
+      res.status(404).json({ message: "The post with the specified ID does not exist!" });
+    }  
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({
+      message: "There was an error updating this post, try again."
+    });
+  });
+});
 
 module.exports = router;
